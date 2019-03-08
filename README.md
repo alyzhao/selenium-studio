@@ -16,53 +16,53 @@ require('chromedriver')   // 引入 chromedriver
 
 #### By 
 
-Describes a mechanism for locating an element on the page.
+描述了在页面上定位元素的机制。
 
-1. By.className()
+- `By.className()`
 
-2. By.css()
+- `By.css()`
 
-3. By.id()
+- `By.id()`
 
-4. By.xpath() 根据路径查找
+- `By.xpath()` 根据路径查找
 
 通常和 `driver.findElement()` 使用, 返回一个 ` WebElementPromise`
 
-#### WebElementPromise 
+#### WebElementPromise
 
-WebElementPromise is a promise that will be fulfilled with a WebElement. This serves as a forward proxy on WebElement, allowing calls to be scheduled without directly on this instance before the underlying WebElement has been fulfilled.
+`WebElementPromise`是一个在`fulfilled`状态下返回`WebElement`的`promise`。它充当`WebElement`的转发代理，允许在完成基础`WebElement`之前直接在此实例上调用。
 
-1. this.click()
+- `this.click()`
 
-2. this.findElement(locator)
+- `this.findElement(locator)`
 
-3. this.getAttribute(attributeName)
+- `this.getAttribute(attributeName)`
 
-4. this.getCssValue()
+- `this.getCssValue()`
 
-5. this.getId()
+- `this.getId()`
 
-6. this.getTagName()
+- `this.getTagName`
 
-7. this.getText()
+- `this.getText()`
 
 #### Builder
 
-1. this.build() This method will return a ThenableWebDriver instance, allowing users to issue commands directly without calling then(). The returned thenable wraps a promise that will resolve to a concrete WebDriver instance. The promise will be rejected if the remote end fails to create a new session.
+- `this.build()` 该方法将返回一个`ThenableWebDriver`实例，允许用户直接发出命令而不调用then。 返回的thenable包含一个将解析为具体`WebDriver`实例的`promise`。 如果远程端无法创建新会话，该`promise`状态将会变为`reject`。
 
 #### ThenableWebDriver
 
-1. this.close() Closes the current window.
+- `this.close()` 关闭当前窗口
 
-2. this.findElement(locator)
+- `this.findElement(locator)`
 
-3. this.get(url)
+- `this.get(url)`
 
-4. this.getCurrentUrl()
+- `this.getCurrentUrl()`
 
-5. this.sleep(ms)
+- `this.sleep(ms)`
 
-6. this.wait(condition, timeout, message)
+- `this.wait(condition, timeout, message)`
 
 
 

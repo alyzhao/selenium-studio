@@ -1,3 +1,6 @@
+/**
+ * 根据浏览器输入不同的type, 测试是否选中的功能是type所对应的功能
+ */
 require('chromedriver')
 const webdriver = require('selenium-webdriver')
 const By = webdriver.By
@@ -30,16 +33,6 @@ const functionName = {
   skinLayout: '自定义皮肤'
 }
 
-// function mapping(obj) {
-//   let r = {}
-//   Reflect.ownKeys(obj).forEach(key => {
-//     r[obj[key]] = key
-//   })
-//   return r
-// }
-
-// let functionName_mapping = mapping(functionName)
-
 /**
  * 根据浏览器输入不同的 type 值, 是否是现实对应的功能 
  */
@@ -56,5 +49,5 @@ async function assertQueryFunction() {
 }
 
 assertQueryFunction().then(() => {
-  driver.quit()  
+  driver.quit()
 })
