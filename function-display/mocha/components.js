@@ -65,11 +65,14 @@ async function testStartADComponent() {
 
 }
 
-// testStartADComponent()
-
+/**
+ * 跑马灯组件测试
+ */
 async function testBulletComponent() {
+  let span_component = await driver.findElement(By.xpath("//label/span[text()='跑马灯']"))
+  await span_component.click()
   try {
-    let div_bulletScreen = await driver.findElement('.bullet-screen')
+    let div_bulletScreen = await driver.findElement(By.css('.bullet-screen'))
     console.log('true ==> 跑马灯组件渲染成功')
 
 
@@ -86,6 +89,7 @@ async function testBulletComponent() {
 
 
   } catch (err) {
+    console.log(err)
     console.log('false ==> 跑马灯组件未渲染')
   }
 }
