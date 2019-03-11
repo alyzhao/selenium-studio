@@ -11,7 +11,6 @@ class Player {
   async pause() {
     let playBtn = await this.driver.findElement(By.css('.prism-play-btn'))
     let playBtnClass = await playBtn.getAttribute('class')
-    console.log(playBtnClass)
     if (playBtnClass.indexOf('playing') >= 0) {
       await playBtn.click()
     } else {
@@ -27,8 +26,7 @@ class Player {
   async play() {
     let playBtn = await this.driver.findElement(By.css('.prism-play-btn'))
     let playBtnClass = await playBtn.getAttribute('class')
-    console.log(playBtnClass)
-    if (playBtnClass.indexOf('playing') < 0) {
+    if (playBtnClass.indexOf('playing') >= 0) {
       // 如果是播放状态, 先暂停再播放
       await playBtn.click()
       await playBtn.click()

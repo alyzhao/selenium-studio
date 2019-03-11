@@ -44,7 +44,7 @@ require('chromedriver')   // 引入 chromedriver
 
 - `this.getTagName`
 
-- `this.getText()`
+- `this.getText()` 获取一个可见 element 的 innerText, 包括子元素的文本
 
 #### Builder
 
@@ -63,6 +63,31 @@ require('chromedriver')   // 引入 chromedriver
 - `this.sleep(ms)`
 
 - `this.wait(condition, timeout, message)`
+
+```
+driver.wait(function() {
+  return driver.getTitle().then(function(title) {
+    return title === 'webdriver - Google Search';
+  });
+}, 1000);
+```
+
+#### until
+
+给 `driver.wait` 提供一个 `condition`
+
+```
+driver.get('http://www.google.com/ncr');
+
+var query = driver.wait(until.elementLocated(By.name('q')));
+query.sendKeys('webdriver\n');
+
+driver.wait(until.titleIs('webdriver - Google Search'));
+```
+
+- `elementLocated` 根据指定的 `locator` 创建一个 `condition`, 循环直到一个 `element` 被找到
+
+- `urlContains` 创建一个 `condition`，该 `condition` 将等待当前页面的`url`包含给定的子字符串。
 
 
 
