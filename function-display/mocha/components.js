@@ -222,7 +222,6 @@ async function testPlayList() {
     console.log(e)
   }
 
-
   async function getCurrentPlayVideoIndex(videoTitleList) {
     let div_active = await driver.findElement(By.css('.video-item.active'))
     let currentTitle = await div_active.getAttribute('title')
@@ -231,10 +230,136 @@ async function testPlayList() {
   }
 }
 
+/**
+ * 测试镜像组件
+ */
+async function testRotateMirror() {
+  let span_component = await driver.findElement(By.xpath("//label/span[text()='旋转镜像']"))
+  await span_component.click()
+
+  // test icon 渲染是否成功
+  let div_iconRotateMirror = null
+  try {
+    div_iconRotateMirror = driver.findElement(By.css('.aliplayer-rotate-mirror'))
+    console.log(`true ==> 旋转镜像组件渲染正确`)
+  } catch (e) {
+    console.log(`false ==> 旋转镜像组件渲染错误`)
+  }
+
+  let div_playerCon = driver.findElement(By.id('player-con'))
+  let video_ele = div_playerCon.findElement(By.css('video'))
+
+  // 验证逆时针旋转45度
+  // getCssValue 获取的 transform, 是 matrix 矩阵变换, 所以用 getAttribute
+  let videoTransform_before = await video_ele.getAttribute('style')
+  let anticlockwise_before = getRotateDegree(videoTransform_before)
+  let icon_rotateLeft = await div_iconRotateMirror.findElement(By.css('.icon-player-rotate-left'))
+  await icon_rotateLeft.click()
+  let videoTransform_now = await video_ele.getAttribute('style')
+  let anticlockwise_now = getRotateDegree(videoTransform_now)
+  let condition_anticlockwise = anticlockwise_before - anticlockwise_now === 45
+  console.log(`${condition_anticlockwise} ==> 逆时针旋转45度 ${condition_anticlockwise ? '正确' : '错误'}`)
+
+  // 验证顺时针旋转45度
+  let clockwise_before = anticlockwise_now
+  let icon_rotateRight = await div_iconRotateMirror.findElement(By.css('.icon-player-rotate-right'))
+  await icon_rotateRight.click()
+  videoTransform_now = await video_ele.getAttribute('style')
+  let clockwise_now = getRotateDegree(videoTransform_now)
+  let condition_clockwise = clockwise_before - clockwise_now === -45
+  console.log(`${condition_clockwise} ==> 顺时针旋转45度 ${condition_clockwise ? '正确' : '错误'}`)
+
+  // 验证水平镜像
+  let div_mirror = await div_iconRotateMirror.findElement(By.css('.mirror-option'))
+  let icon_mirrorSwitch = await div_iconRotateMirror.findElement(By.css('.icon-player-switch'))
+  await icon_mirrorSwitch.click()
+  let div_mirrorHorizon = await div_iconRotateMirror.findElement(By.css('.mirror-item[data-id=horizon]'))
+
+  // 如果不点击 icon_mirrorSwitch, 不显示出水平镜像的按钮, 报错 element not interactable
+  await div_mirrorHorizon.click()   
+  let videoScaleX = (await getVideoScacle()).x
+  let condition_mirrorHorizon = videoScaleX === -1
+  console.log(`${condition_mirrorHorizon} ==> 水平镜像显示${condition_mirrorHorizon ? '正确' : '错误'}`)
+
+  // 验证垂直镜像
+  let div_mirrorVertical = await div_iconRotateMirror.findElement(By.css('.mirror-item[data-id=vertical]'))
+  await div_mirrorVertical.click()
+  let videoScaleY = (await getVideoScacle()).y
+  let condition_mirrotVertical = videoScaleY === -1
+  console.log(`${condition_mirrotVertical} ==> 垂直镜像显示${condition_mirrotVertical ? '正确' : '错误'}`)  
+
+  function getRotateDegree(transform) {
+    let reg = /rotate\((\-?\d+)deg\)/
+    let result = transform.match(reg)
+    if (result !== null) {
+      return result[1]
+    } else {
+      return 0
+    }
+  }
+
+  async function getVideoScacle() {
+    let transform = await video_ele.getAttribute('style')
+    let reg_x = /scaleX\((\-?\d+)\)/
+    let reg_y = /scaleY\((\-?\d+)\)/
+    let result_x = transform.match(reg_x)
+    let x = result_x === null ? 1 : result_x[1]
+    let result_y = transform.match(reg_y)
+    let y = result_y === null ? 1: result_y[1]
+    return {
+      x: Number(x),
+      y: Number(y)
+    }
+  }
+}
+
+/**
+ * 测试视频广告组件
+ */
+async function testVideoAd() {
+  let span_component = await driver.findElement(By.xpath("//label/span[text()='视频广告']"))
+  await span_component.click()
+
+  let div_videoAd = null
+  let condition_videoAd = false
+  try {
+    div_videoAd = await driver.findElement(By.css('.video-ad-component'))
+    condition_videoAd = true
+  } catch (e) {
+    console.log(e)
+  }
+  console.log(`${condition_videoAd} ==> 视频广告组件渲染${condition_videoAd ? '正确' : '错误'}`)
+
+  let video_ad = await div_videoAd.findElement(By.id('video-ad-content'))
+  let videoAdSource = await video_ad.getAttribute('src')
+
+  if (videoAdSource === 'https://player.alicdn.com/video/guanggao.mp4') {
+    console.log('true 视频广告播放地址正确')
+  } else {
+    console.log('false 视频广告播放地址错误')
+  }
+
+  let div_autoPlay = await div_videoAd.findElement(By.css('.autoplay-video-ad'))
+  let autoPlay = (await div_autoPlay.getCssValue('display')) !== 'block'
+  if (!autoPlay) {
+    let icon_autoPlay = await div_videoAd.findElement(By.css('.icon-player-play'))
+    await icon_autoPlay.click()
+  }
+
+  driver.wait(async () => {
+    let span_adDuration = await div_videoAd.findElement(By.id('video-ad-duration'))
+    console.log(await span_adDuration.getText())
+    let duration = await span_adDuration.getText()
+    console.log(duration)
+    return duration <= 0
+  })
+
+  
+}
 
 
-testPlayList()
+testVideoAd()
 .then(() => {
-  driver.quit()
+  // driver.quit()
 })
 
